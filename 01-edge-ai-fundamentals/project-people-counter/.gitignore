@@ -1,0 +1,5 @@
+.idea
+venv
+data/*.mp4
+data/*.png
+model
