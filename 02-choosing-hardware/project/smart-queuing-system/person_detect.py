@@ -2,7 +2,7 @@ from datetime import time
 
 import numpy as np
 from openvino.inference_engine import IENetwork
-from openvino.inference_engine import IEPlugin
+from openvino.inference_engine import IECore
 import os
 import cv2
 import argparse
@@ -38,41 +38,49 @@ class PersonDetect:
     Class for the Person Detection Model.
     """
 
-    def __init__(self):
-        """
-        TODO: This method needs to be completed by you
-        """
-        raise NotImplementedError
+    def __init__(self, model_xml):
+        # TODO: This method needs to be completed by you
+        self.model_structure = model_xml
+        self.model_weights = os.path.splitext(model_xml)[0] + ".bin"
+        self.network = None
+        self.input_shape = None
+        self.input_key = None
+        self.output_key = None
 
-    def load_model(self):
-        """
-        TODO: This method needs to be completed by you
-        """
-        raise NotImplementedError
+    def load_model(self, device):
+        # TODO: This method needs to be completed by you
+        model = IENetwork(self.model_structure, self.model_weights)
+        print('Model loaded')
+        core = IECore()
+        print('Core created')
+        self.network = core.load_network(network=model, device_name=device, num_requests=1)
+        print('Network loaded')
+        self.input_key = next(iter(self.network.inputs))
+        self.output_key = next(iter(self.network.outputs))
+        self.input_shape = self.network.inputs[self.input_key].shape
 
     def check_plugin(self, plugin):
-        """
-        TODO: This method needs to be completed by you
-        """
-        raise NotImplementedError
-        
-    def predict(self, image):
-        """
-        TODO: This method needs to be completed by you
-        """
+        # TODO: This method needs to be completed by you
         raise NotImplementedError
 
+    def predict(self, image):
+        # TODO: This method needs to be completed by you
+        net_input = self.preprocess_input(image)
+        infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
+        if infer_request_handle.wait() == 0:
+            net_output = infer_request_handle.outputs[self.output_key]
+            return self.preprocess_outputs(net_output)
+
     def preprocess_outputs(self, outputs):
-        """
-        TODO: This method needs to be completed by you
-        """
+        # TODO: This method needs to be completed by you
         raise NotImplementedError
 
     def preprocess_input(self, image):
-        """
-        TODO: This method needs to be completed by you
-        """
-        raise NotImplementedError
+        # TODO: This method needs to be completed by you
+        input_image = cv2.resize(image, self.input_shape)
+        input_image = input_image.transpose((2, 0, 1))
+        input_image = input_image.reshape(1, *input_image.shape)
+        return {self.input_key: input_image}
 
 
 def main(args):
@@ -122,7 +130,7 @@ def main(args):
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
             else:
-                coords=pd.predict(frame)
+                coords = pd.predict(frame)
                 print(coords)
 
         cap.release()
