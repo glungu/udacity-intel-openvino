@@ -6,6 +6,6 @@ share
 pyvenv.cfg
 pip-selfcheck.json
 .idea
-.ipynb_checkpoints
+**/.ipynb_checkpoints
 **/__pycache__
 **/*.mp4
