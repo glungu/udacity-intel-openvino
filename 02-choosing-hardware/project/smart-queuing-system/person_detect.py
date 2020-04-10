@@ -111,7 +111,8 @@ def main(args):
     start = datetime.now()
     pd = PersonDetect(model_xml=model)
     pd.load_model(device=device)
-    print(f"Model loaded, loading time: {datetime.now()-start}")
+    loading_time = datetime.now()-start
+    print(f"Model loaded, loading time: {loading_time}")
     
     # Queue Parameters
     queue = Queue()
@@ -180,7 +181,19 @@ def main(args):
                 coords = pd.predict(frame)
                 print(coords)
 
-        print(f'Total frames {frame_counter}, processing time: {datetime.now()-start}')
+        inference_time = datetime.now()-start
+        print(f'Total frames {frame_counter}, processing time: {inference_time}')
+
+        out_stats.write('Frames: {}\n'.format(frame_counter))
+        out_stats.write('Model loading time: {}\n'.format(loading_time))
+        out_stats.write('Total inference time: {}\n'.format(inference_time))
+
+        # datetime.strptime(inference_time, "%H:%M:%S.%f")
+        inference_time_ms = inference_time.seconds * 1000.0 + (inference_time.microseconds / 1000.0)
+        inference_frame_ms = inference_time_ms / frame_counter
+        out_stats.write('Inference time per frame (ms): {:.3f}\n'.format(inference_frame_ms))
+        out_stats.write('Inference FPS: {:.3f}\n'.format(1000.0 / inference_frame_ms))
+        out_stats.flush()
 
         if visualise:
             out.release()
