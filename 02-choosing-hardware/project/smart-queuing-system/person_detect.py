@@ -105,6 +105,7 @@ def main(args):
     device = args.device
     visualise = args.visualise
     th = float(args.threshold)
+    video_file = args.video
     output_path = args.output_path
 
     start = datetime.now()
@@ -113,24 +114,26 @@ def main(args):
     print(f"Model loaded, loading time: {datetime.now()-start}")
     
     # Queue Parameters
+    queue = Queue()
 
     # For retail
-    # queue.add_queue([620, 1, 915, 562])
-    # queue.add_queue([1000, 1, 1264, 461])
+    if 'retail.mp4' in video_file:
+        queue.add_queue([620, 1, 915, 562])
+        queue.add_queue([1000, 1, 1264, 461])
 
     # For manufacturing
-    # queue.add_queue([15, 180, 730, 780])
-    # queue.add_queue([921, 144, 1424, 704])
-
-    # For Transport
-    # queue.add_queue([50, 90, 838, 794])
-    # queue.add_queue([852, 74, 1430, 841])
-
-    try:
-        queue = Queue()
+    if 'manufacturing.mp4' in video_file:
+        # queue.add_queue([15, 180, 730, 780])
+        # queue.add_queue([921, 144, 1424, 704])
         queue.add_queue([15, 180, 900, 780])
         queue.add_queue([921, 144, 1600, 704])
-        video_file = args.video
+
+    # For Transport
+    if 'transportation.mp4' in video_file:
+        queue.add_queue([50, 90, 838, 794])
+        queue.add_queue([852, 74, 1430, 841])
+
+    try:
         cap = cv2.VideoCapture(video_file)
         cap.open(video_file)
 
