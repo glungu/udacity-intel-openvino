@@ -63,6 +63,8 @@ Each notebook make use of the `person_detect.py` script to make inference. It fo
 ## Results
 *TODO* In this section you can write down all the results you got. You can go ahead and fill the table below.
 
+#### Manufacturing
+
 | Type of Hardware | Time required for inference (on average)(ms) | Time for loading the model | Type of Model Precision |
 |------------------|----------------------------------------------|----------------------------|-------------------------|
 | CPU              |  40.192                                      |  01.679189                 |  FP16                   |
@@ -70,9 +72,31 @@ Each notebook make use of the `person_detect.py` script to make inference. It fo
 | VPU              |  156.621                                     |  02.530733                 |  FP16                   |
 | FPGA             |  32.942                                      |  29.014384                 |  FP16                   |
 
+
+#### Retail
+ 
+| Type of Hardware | Time required for inference (on average)(ms) | Time for loading the model | Type of Model Precision |
+|------------------|----------------------------------------------|----------------------------|-------------------------|
+| CPU              |  27.043                                      |  01.587233                 |  FP16                   |
+| GPU              |  32.928                                      |  36.118535                 |  FP16                   |
+| VPU              |  146.740                                     |  02.566522                 |  FP16                   |
+| FPGA             |  19.558                                      |  29.120876                 |  FP16                   |
+
+
+#### Transportation
+
+| Type of Hardware | Time required for inference (on average)(ms) | Time for loading the model | Type of Model Precision |
+|------------------|----------------------------------------------|----------------------------|-------------------------|
+| CPU              |  50.998                                      |  01.521313                 |  FP16                   |
+| GPU              |  52.103                                      |  35.303533                 |  FP16                   |
+| VPU              |  149.853                                     |  02.584625                 |  FP16                   |
+| FPGA             |  41.968                                      |  29.428855                 |  FP16                   |
+
+
 ## Conclusions
 The fastest inference is on FPGA, although takes longer to load the model.
-
+CPU and GPU are almost the same on inference, with GPU a little longer, and much longer to load the model.
+Finally, VPU is the slowest on inference. 
 
 *TODO* In this section, you can give an explanation for your results. 
 You can also attach the merits and demerits observed for each hardware in this section
