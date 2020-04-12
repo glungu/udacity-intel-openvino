@@ -61,7 +61,6 @@ Each notebook make use of the `person_detect.py` script to make inference. It fo
   * Inference FPS (frames per second)
      
 ## Results
-*TODO* In this section you can write down all the results you got. You can go ahead and fill the table below.
 
 #### Manufacturing
 
@@ -98,10 +97,3 @@ The fastest inference is on FPGA, although takes longer to load the model.
 CPU and GPU are almost the same on inference, with GPU a little longer, and much longer to load the model.
 Finally, VPU is the slowest on inference. 
 
-*TODO* In this section, you can give an explanation for your results. 
-You can also attach the merits and demerits observed for each hardware in this section
-
-## Stand Out Suggestions
-*TODO* If you have implemented the standout suggestions, this is the section where you can document what you have done.
-- Fallback Policy: Use OpenVINO's Hetero plugin to use a fallback device like CPU when the main prediction device fails. Write about the changes you had to make in the code to implement these changes. More information regarding Fallback Policy can be found [here](https://docs.openvinotoolkit.org/latest/_docs_IE_DG_supported_plugins_HETERO.html)
-- MultiDevice Plugin: Use the multi device plugin available as a part of the OpenVINO toolkit. Write about the changes that you had to make in your code to implement this.
