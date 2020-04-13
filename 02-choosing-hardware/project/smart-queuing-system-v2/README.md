@@ -9,57 +9,54 @@ The type of hardware chosen for each of the scenarios:
 - Retail: CPU + Integrated GPU
 - Transportation: CPU + VPU
 
-## Project Set Up and Installation
-Project setup procedure included the following steps:
-* Connect to Intel DevCloud, setup developer account, and create or upload jupyter notebook in the DevCloud 
-  to have access to the DevCloud environment
-* Downloading the pre-trained model from OpenVINO model zoo: person-detection-retail-0013. 
-  IR (Intermediate Representation) consists of two files: 
-  [xml](https://download.01.org/opencv/2020/openvinotoolkit/2020.1/open_model_zoo/models_bin/1/person-detection-retail-0013/FP16/person-detection-retail-0013.xml),
-  [bin](https://download.01.org/opencv/2020/openvinotoolkit/2020.1/open_model_zoo/models_bin/1/person-detection-retail-0013/FP16/person-detection-retail-0013.bin). 
-  Downloading can be performed using OpenVINO's Model Downloader, or by using `wget` and direct links:
-  
+## Project Setup
+The project is intended to run in Udacity's Workspace, which contains the interface 
+(e.g. qsub command) to submit jobs to Intel DevCloud.
+The environment comes with pre-loaded `person-detection-retail-0013` model from Intel model zoo 
+located at `/data/models/intel/person-detection-retail-0013`,
+but the IR (xml and bin files) of the model could be loaded as follows:
+
   `!wget https://download.01.org/opencv/2020/openvinotoolkit/2020.1/open_model_zoo/models_bin/1/person-detection-retail-0013/FP16/person-detection-retail-0013.xml`
   
   `!wget https://download.01.org/opencv/2020/openvinotoolkit/2020.1/open_model_zoo/models_bin/1/person-detection-retail-0013/FP16/person-detection-retail-0013.bin`
+
+
+## Project Structure
+Project consists of the following files and directories:
+
+* `person_detect.py` - Python script containing the main logic of video processing.
+  This script is created by `Create_Python_Script.ipynb` notebook.
+  Parameters:
+  * `--model`: The file path of the pre-trained IR model. The model is located at: `/data/models/intel/person-detection-retail-0013`
+  * `--device`: The type of hardware you want to load the model on (CPU, GPU, MYRIAD, HETERO:FPGA,CPU)
+  * `--queue_param`: The queue parameter file, defining the queue area coordinates (`/data/queue_param/<task>.npy`)
+  * `--video`: The file path of the input video. Videos are located at: `/data/resources/` and are named as `manufacturing.mp4`, `retail.mp4` and `transportation.mp4`
+  * `--output_path`: The location where the output stats and video file with inference needs to be stored (`/output/results/<task>/<device>`).
+  * `--max_people`: The max number of people in queue before directing a person to another queue.
+  * `--threshold`: The probability threshold value for the person detection. Optional, default value: 0.6
   
-  The downloaded model was placed in the `model` sub-directory of the home dir in the virtual environment 
-  running jupyter notebook. This ensures that it will be made available to the virtual host running the actual job.  
-   
-* Check that command line tools like `qsub`, `qstat`, `qdel` etc. are available 
-  to submit, delete and query status of DevCloud Jobs
-* Install dependencies required by the project using `pip` from the jupyter notebook, for example:
-  `!pip3 install ipywidgets matplotlib`  
-
-## Documentation
-The project code is mainly located in the following files:
-* `person_detect.py` - Python script containing the main inference code: 
-  initialising OpenVINO core, loading the network to make it ready for inference, 
-  loading and processing the input MP4 file, and outputting the resulting MP4 file with bounding boxes.
-  Two sets of bounding boxes are added to the original file: green - for the location of the queuing areas, 
-  red - for the location of the people found in frame.
-  Additionally, the script outputs `stats.txt` file with information on total people and the number of 
-  people in each queue area per frame. 
-  Measures of loading and total inference time are also written at the end of this file.
-
-The three jupyter notebooks for each of the scenarios:
-* `people_deployment-manufacturing.ipynb` - Manufacturing (worker queues at conveyor belt on the factory floor)
-* `people_deployment-retail.ipynb` - Retail (customer queues at cashier counters at the grocery store) 
-* `people_deployment-transportation.ipynb` - Transportation (passenger queues at the busy metro station)
-
-Each notebook make use of the `person_detect.py` script to make inference. It follows the same pattern:
-* Creates job script
-* Submits 4 jobs using this script to the DevCloud, using same video for particular scenario, but different hardware: 
+* `queue_job.sh` - Shell script that runs person_detect.py. 
+  This script is created by `Create_Job_Submission_Script.ipynb` notebook.
+  It is to be submitted with `qsub` utility and run on the DevCloud.
+     
+* Notebooks for performing inference, one per task: 
+  * `Manufacturing_Scenario.ipynb`
+  * `Retail_Scenario.ipynb`
+  * `Transportation_Scenario.ipynb`
+  
+  Each notebook runs particular task inference on 4 hardware devices: 
   * IEI Tank 870-Q170 edge node with an Intel® Core™ i5-6500TE (CPU)
   * IEI Tank 870-Q170 edge node with an Intel® Core™ i5-6500TE (CPU + Integrated Intel® HD Graphics 530 card GPU)
   * IEI Tank 870-Q170 edge node with an Intel® Core™ i5-6500TE, with Intel Neural Compute Stick 2 (Myriad X)
   * IEI Tank 870-Q170 edge node with an Intel® Core™ i5-6500TE, with IEI Mustang-F100-A10 card (Arria 10 FPGA).
-* Shows results of each job:
-  * Video with bounding boxes
+  
+  Each job outputs the video file with people's bounding boxes (and, additionally, the bounding boxes for queue areas).
+  The job also outputs stats.txt file containing the following stats parameters by which the 
+  model's performance is compared across devices:
   * Model loading time 
-  * Average Inference time per frame
+  * Inference time
   * Inference FPS (frames per second)
-     
+
 ## Results
 
 Here is an example frame from the video output in the Retail scenario.

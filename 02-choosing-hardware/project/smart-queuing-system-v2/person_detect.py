@@ -7,6 +7,33 @@ import cv2
 import argparse
 import sys
 import traceback
+from os import listdir
+from os.path import isfile, join
+
+
+def check_layers_supported(engine, network, device):
+    """
+    Check if all layers of the network are supported
+    :param engine: IECore
+    :param network: IENetwork
+    :param device: Inference device
+    :return: True if all supported, False otherwise
+    """
+    layers_supported = engine.query_network(network, device_name=device)
+    layers = network.layers.keys()
+
+    all_supported = True
+    for l in layers:
+        if l not in layers_supported:
+            all_supported = False
+            print('### Layer', l, 'is not supported on', device)
+    if all_supported:
+        print('### All layers supported!')
+    return all_supported
+
+
+def list_files():
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 
 class Queue:
@@ -35,38 +62,40 @@ class Queue:
 
 
 class PersonDetect:
-    '''
+    """
     Class for the Person Detection Model.
-    '''
+    """
 
     def __init__(self, model_name, device, threshold=0.60):
-        self.model_weights=model_name+'.bin'
-        self.model_structure=model_name+'.xml'
-        self.device=device
-        self.threshold=threshold
+        self.model_weights = model_name + '.bin'
+        self.model_structure = model_name + '.xml'
+        self.device = device
+        self.threshold = threshold
 
         try:
-            self.model=IENetwork(self.model_structure, self.model_weights)
+            self.model = IENetwork(self.model_structure, self.model_weights)
         except Exception as e:
-            raise ValueError("Could not Initialise the network. Have you enterred the correct model path?")
+            raise ValueError("Could not Initialise the network. Have you entered the correct model path?")
 
-        self.input_name=next(iter(self.model.inputs))
-        self.input_shape=self.model.inputs[self.input_name].shape
-        self.output_name=next(iter(self.model.outputs))
-        self.output_shape=self.model.outputs[self.output_name].shape
+        self.input_name = next(iter(self.model.inputs))
+        self.input_shape = self.model.inputs[self.input_name].shape
+        self.output_name = next(iter(self.model.outputs))
+        self.output_shape = self.model.outputs[self.output_name].shape
+        self.network = None
 
     def load_model(self):
-        '''
+        """
         TODO: This method needs to be completed by you
-        '''
+        """
         core = IECore()
+        check_layers_supported(core, self.model, self.device)
+
         self.network = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
-        
     def predict(self, image):
-        '''
+        """
         TODO: This method needs to be completed by you
-        '''
+        """
         net_input = self.preprocess_input(image)
         infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
         if infer_request_handle.wait() == 0:
@@ -74,11 +103,10 @@ class PersonDetect:
             boxes = self.preprocess_outputs(net_output)
             return self.draw_outputs(boxes, image)
 
-    
     def draw_outputs(self, coords, image):
-        '''
+        """
         TODO: This method needs to be completed by you
-        '''
+        """
         w = image.shape[1]
         h = image.shape[0]
         boxes = []
@@ -89,11 +117,10 @@ class PersonDetect:
             image = cv2.rectangle(image, p1, p2, (0, 0, 255), 3)
         return boxes, image
 
-
     def preprocess_outputs(self, outputs):
-        '''
+        """
         TODO: This method needs to be completed by you
-        '''
+        """
         boxes = []
         probs = outputs[0, 0, :, 2]
         for i, p in enumerate(probs):
@@ -102,11 +129,10 @@ class PersonDetect:
                 boxes.append(box)
         return boxes
 
-
     def preprocess_input(self, image):
-        '''
+        """
         TODO: This method needs to be completed by you
-        '''
+        """
         input_image = cv2.resize(image, (self.input_shape[3], self.input_shape[2]))
         input_image = input_image.transpose((2, 0, 1))
         input_image = input_image.reshape(1, *input_image.shape)
