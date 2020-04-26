@@ -1,4 +1,5 @@
- # Smart Queue Monitoring System
+ # Smart Queue Monitoring System (v1)
+This is the first (initial) version of the project.
 This project deals with detecting people in queues (in order to redirect them to shortest queue) 
 using inference on pre-trained neural network with Intel OpenVINO framework. 
 The idea is to choose hardware most suited for particular task (scenario). 
