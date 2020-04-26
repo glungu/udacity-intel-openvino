@@ -1,0 +1,114 @@
+{
+  'dense_1_3/BiasAdd/Add': {
+    'cpu_time': 322,
+    'exec_type': 'gemm_blas_FP32',
+    'execution_index': 9,
+    'layer_type': 'FullyConnected',
+    'real_time': 322,
+    'status': 'EXECUTED'
+  },
+  'dense_1_3/Relu': {
+    'cpu_time': 4,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 10,
+    'layer_type': 'ReLU',
+    'real_time': 4,
+    'status': 'EXECUTED'
+  },
+  'flatten_1_3/Reshape': {
+    'cpu_time': 0,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 8,
+    'layer_type': 'Reshape',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'input_3/BiasAdd/Add': {
+    'cpu_time': 15,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 1,
+    'layer_type': 'Convolution',
+    'real_time': 15,
+    'status': 'EXECUTED'
+  },
+  'input_3/Relu': {
+    'cpu_time': 0,
+    'exec_type': 'undef',
+    'execution_index': 2,
+    'layer_type': 'ReLU',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'input_3/separable_conv2d/depthwise': {
+    'cpu_time': 25,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 0,
+    'layer_type': 'Convolution',
+    'real_time': 25,
+    'status': 'EXECUTED'
+  },
+  'out_output_3/Softmax': {
+    'cpu_time': 1,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 13,
+    'layer_type': 'Output',
+    'real_time': 1,
+    'status': 'EXECUTED'
+  },
+  'output_3/BiasAdd/Add': {
+    'cpu_time': 4,
+    'exec_type': 'gemm_blas_FP32',
+    'execution_index': 11,
+    'layer_type': 'FullyConnected',
+    'real_time': 4,
+    'status': 'EXECUTED'
+  },
+  'output_3/Softmax': {
+    'cpu_time': 18,
+    'exec_type': 'ref_any_FP32',
+    'execution_index': 12,
+    'layer_type': 'SoftMax',
+    'real_time': 18,
+    'status': 'EXECUTED'
+  },
+  'separable_conv2d_1_1/BiasAdd/Add': {
+    'cpu_time': 8,
+    'exec_type': 'jit_avx2_1x1_FP32',
+    'execution_index': 4,
+    'layer_type': 'Convolution',
+    'real_time': 8,
+    'status': 'EXECUTED'
+  },
+  'separable_conv2d_1_1/BiasAdd/Add_nChw8c_nchw_separable_conv2d_1_1/Relu/Transpose': {
+    'cpu_time': 15,
+    'exec_type': 'ref_any_FP32',
+    'execution_index': 6,
+    'layer_type': 'Reorder',
+    'real_time': 15,
+    'status': 'EXECUTED'
+  },
+  'separable_conv2d_1_1/Relu': {
+    'cpu_time': 0,
+    'exec_type': 'undef',
+    'execution_index': 5,
+    'layer_type': 'ReLU',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'separable_conv2d_1_1/Relu/Transpose': {
+    'cpu_time': 36,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 7,
+    'layer_type': 'Permute',
+    'real_time': 36,
+    'status': 'EXECUTED'
+  },
+  'separable_conv2d_1_1/separable_conv2d/depthwise': {
+    'cpu_time': 36,
+    'exec_type': 'jit_avx2_dw_FP32',
+    'execution_index': 3,
+    'layer_type': 'Convolution',
+    'real_time': 36,
+    'status': 'EXECUTED'
+  }
+}

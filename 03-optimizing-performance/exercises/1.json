@@ -1,0 +1,106 @@
+{
+  'average_pooling2d_1/AvgPool': {
+    'cpu_time': 15,
+    'exec_type': 'jit_avx_FP32',
+    'execution_index': 2,
+    'layer_type': 'Pooling',
+    'real_time': 15,
+    'status': 'EXECUTED'
+  },
+  'conv2d_1_1/Relu': {
+    'cpu_time': 0,
+    'exec_type': 'undef',
+    'execution_index': 4,
+    'layer_type': 'ReLU',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'conv2d_1_1/Relu/Transpose': {
+    'cpu_time': 13,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 6,
+    'layer_type': 'Permute',
+    'real_time': 13,
+    'status': 'EXECUTED'
+  },
+  'conv2d_1_1/convolution': {
+    'cpu_time': 13,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 3,
+    'layer_type': 'Convolution',
+    'real_time': 13,
+    'status': 'EXECUTED'
+  },
+  'conv2d_1_1/convolution_nChw8c_nchw_conv2d_1_1/Relu/Transpose': {
+    'cpu_time': 11,
+    'exec_type': 'ref_any_FP32',
+    'execution_index': 5,
+    'layer_type': 'Reorder',
+    'real_time': 11,
+    'status': 'EXECUTED'
+  },
+  'dense_1_2/MatMul': {
+    'cpu_time': 261,
+    'exec_type': 'gemm_blas_FP32',
+    'execution_index': 8,
+    'layer_type': 'FullyConnected',
+    'real_time': 261,
+    'status': 'EXECUTED'
+  },
+  'dense_1_2/Relu': {
+    'cpu_time': 4,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 9,
+    'layer_type': 'ReLU',
+    'real_time': 4,
+    'status': 'EXECUTED'
+  },
+  'flatten_1_2/Reshape': {
+    'cpu_time': 0,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 7,
+    'layer_type': 'Reshape',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'input_2/Relu': {
+    'cpu_time': 0,
+    'exec_type': 'undef',
+    'execution_index': 1,
+    'layer_type': 'ReLU',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'input_2/convolution': {
+    'cpu_time': 13,
+    'exec_type': 'jit_avx2_FP32',
+    'execution_index': 0,
+    'layer_type': 'Convolution',
+    'real_time': 13,
+    'status': 'EXECUTED'
+  },
+  'out_output_2/Softmax': {
+    'cpu_time': 0,
+    'exec_type': 'unknown_FP32',
+    'execution_index': 12,
+    'layer_type': 'Output',
+    'real_time': 0,
+    'status': 'NOT_RUN'
+  },
+  'output_2/MatMul': {
+    'cpu_time': 3,
+    'exec_type': 'gemm_blas_FP32',
+    'execution_index': 10,
+    'layer_type': 'FullyConnected',
+    'real_time': 3,
+    'status': 'EXECUTED'
+  },
+  'output_2/Softmax': {
+    'cpu_time': 15,
+    'exec_type': 'ref_any_FP32',
+    'execution_index': 11,
+    'layer_type': 'SoftMax',
+    'real_time': 15,
+    'status': 'EXECUTED'
+  }
+}
