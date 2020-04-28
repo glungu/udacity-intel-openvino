@@ -26,7 +26,10 @@ def init(args):
     model_landmarks.load_model()
     model_head_pose.load_model()
     model_gaze_estimation.load_model()
-    mouse_controller = MouseController(args.precision, args.speed)
+
+    mouse_controller = None
+    if args.precision in ['high', 'low', 'medium'] and args.speed in ['fast', 'slow', 'medium']:
+        mouse_controller = MouseController(args.precision, args.speed)
 
 
 def process_single_frame(image):
@@ -71,19 +74,23 @@ def process_image(file_path):
 
 
 def process_video(file_path):
-    feed = InputFeeder(input_type='video', input_file=file_path)
+    if file_path is None:
+        feed = InputFeeder(input_type='cam')
+    else:
+        feed = InputFeeder(input_type='video', input_file=file_path)
+
     feed.load_data()
 
     w = int(feed.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(feed.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    f = int(feed.cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = int(feed.cap.get(cv2.CAP_PROP_FPS))
     out = cv2.VideoWriter('../bin/output_video.mp4', cv2.VideoWriter_fourcc(*'avc1'), fps, (w, h), True)
 
     for batch in feed.next_batch():
         result, frame = process_single_frame(batch)
         out.write(frame)
-        mouse_controller.move(result[0], result[1])
+        if mouse_controller is not None:
+            mouse_controller.move(result[0], result[1])
 
     out.release()
     feed.close()
@@ -95,13 +102,15 @@ def main(args):
         process_image(args.file)
     elif args.type == 'video':
         process_video(args.file)
+    elif args.type == 'cam':
+        process_video()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--type', default='video')
     parser.add_argument('--file', default='../bin/demo.mp4')
-    parser.add_argument('--precision', default='high')
-    parser.add_argument('--speed', default='fast')
+    parser.add_argument('--precision', default='')
+    parser.add_argument('--speed', default='')
     parsed_args = parser.parse_args()
     main(parsed_args)

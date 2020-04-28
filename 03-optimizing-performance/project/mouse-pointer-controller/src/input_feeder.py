@@ -35,7 +35,7 @@ class InputFeeder:
         Returns the next image from either a video file or webcam.
         If input_type is 'image', then it returns the same image.
         """
-        if self.input_type == 'video':
+        if self.input_type == 'video' or self.input_type == 'cam':
             while self.cap.isOpened():
                 # for _ in range(10):
                 #     ret, frame = self.cap.read()
