@@ -43,12 +43,16 @@ class ModelAbstract:
         else:
             print(f'[{self.name}] All layers supported')
 
-        s = time.time()
-        self.network = self.core.load_network(
-            network=self.model,
-            device_name=self.device,
-            num_requests=1)
-        self.loading_time = time.time() - s
+        try:
+            s = time.time()
+            self.network = self.core.load_network(
+                network=self.model,
+                device_name=self.device,
+                num_requests=1)
+            self.loading_time = time.time() - s
+        except Exception as e:
+            print(f'[{self.name}] ERROR: Cannot load network: {e}')
+            raise e
 
     def predict(self, image):
         s1 = time.time()
@@ -62,7 +66,6 @@ class ModelAbstract:
         net_output = infer_request_handle.outputs
         output = self.preprocess_output(net_output, image)
         self.processing_times.append(time.time() - s1)
-
         return output
 
     def check_model(self):
@@ -80,5 +83,5 @@ class ModelAbstract:
         if header:
             print()
             print(f'| Name | Loading Time | Avg processing time | Avg inference time |')
-            print(f'------------------------------------------------------------------')
-        print(f'{self.name} | {self.loading_time} | {avg_pt} | {avg_it} |')
+            print(f'|------|--------------|---------------------|--------------------|')
+        print(f'| {self.name} | {self.loading_time:.3} | {avg_pt:.3} | {avg_it:.3} |')
