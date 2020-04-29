@@ -71,6 +71,8 @@ To run the demo on a cam video stream and move the mouse pointer:
 hardwares and multiple model precisions. Your benchmarks can include: model loading time, 
 input/output processing time, model inference time etc.
 
+
+
 ## Results
 *TODO:* Discuss the benchmark results and explain why you are getting the results you are 
 getting. For instance, explain why there is difference in inference time for 

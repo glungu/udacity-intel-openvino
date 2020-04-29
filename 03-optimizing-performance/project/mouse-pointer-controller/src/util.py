@@ -18,8 +18,4 @@ def check_layers_supported(engine, network, device):
             all_supported = False
             print(f'Warning: Layer {l} is not supported on {device}')
 
-    if all_supported:
-        print('All layers supported!')
-        return True
-
     return all_supported
