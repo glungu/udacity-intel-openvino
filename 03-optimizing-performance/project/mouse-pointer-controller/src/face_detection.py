@@ -38,10 +38,11 @@ class ModelFaceDetection(ModelAbstract):
 
         probs = output[0, 0, :, 2]
         i = np.argmax(probs)
-        # if probs[i] > self.threshold
-        # TODO: use threshold? no face detected?
-
-        box = output[0, 0, i, 3:]
-        p1 = (int(box[0] * w), int(box[1] * h))
-        p2 = (int(box[2] * w), int(box[3] * h))
-        return p1, p2, image[p1[1]:p2[1], p1[0]:p2[0]]
+        if probs[i] > self.threshold:
+            box = output[0, 0, i, 3:]
+            p1 = (int(box[0] * w), int(box[1] * h))
+            p2 = (int(box[2] * w), int(box[3] * h))
+            return p1, p2, image[p1[1]:p2[1], p1[0]:p2[0]]
+        else:
+            # no face detected with enough confidence
+            return None, None, None

@@ -22,35 +22,67 @@ I used Ubuntu 18.04 on VirtualBox for this project. These were the preparation s
     * `./downloader.py --name head-pose-estimation-adas-0001 -o ~/Projects/mouse-pointer-controller/models/`
     * `./downloader.py --name landmarks-regression-retail-0009 -o ~/Projects/mouse-pointer-controller/models/`
     * `./downloader.py --name gaze-estimation-adas-0002 -o ~/Projects/mouse-pointer-controller/models/`
-* Implement model loading and inference in python files:
-    * `face_detection.py`
-    * `head_pose_estimation.py`
-    * `landmarks_regression.py`
-    * `gaze_estimation.py`
+* Implement model loading and inference in separate python files for each model (see Directory Structure)
 * Implement feed iteration for single image and video stream in `input_feeder.py`
 * Implement main logic putting pieces together in `main.py`
 
+## Directory Structure
+* `README.md` - This write-up 
+* `requirements.txt` - Requirements for this project 
+* `src/`
+    * `model_abstract.py` - Abstract Model class containing all the common methods
+    * `face_detection.py` - Face Detection inference implementation 
+    * `head_pose_estimation.py` - Head Pose Estimation inference implementation
+    * `landmarks_regression.py` - Facial Landmarks Detection inference implementation
+    * `gaze_estimation.py` - Gaze Estimation inference implementation
+    * `util.py` - Utility functions, e.g. checking layer support
+    * `mouse_controller.py` - Class for controlling mouse movement using `pyautogui` lib
+    * `input_feeder.py` - Input feeder implementing iteration over input frames 
+    * `main.py` - Main script to be run (puts inference pipeline together)   
+* `bin/`
+    * `demo.png` - Example input image file
+    * `demo.mp4` - Example input video file
+    * `output_fp16.png` - Output from an example image file 
+    * `output_fp16.mp4` - Output from an example video file
+    * `output_fp16.log` - Example processing log file (with DEBUG level) 
+
 ## Demo
-Below id the example frame from a processed video file showing the detected gaze direction
-of a person in the video (showing gaze vector projection, as an alternative to mouse moving):
-![Demo](demo.png)
+Below is the example image output from a demo image file showing the detected face and 
+gaze direction of a person in the image 
+(showing gaze vector projection, as an alternative to mouse moving):
+![Demo Image](demo_image.png)
+
+Image input and output files included in the `bin` directory:
+* `demo.png`
+* `output_fp16.png` 
  
- Video file `bin/demo_output.mp4` is included.
+Here is also a similar example but running on a demo video file, showing output video:
+![Demo Video](demo_video.png)
+
+Video input and output files included in the `bin` directory as well:
+* `demo.mp4`
+* `output_fp16.mp4` 
+ 
 
 ## Documentation
 The `main.py` has the following parameters:
-* `--type`: 'image', 'video' or 'cam'
-* `--file`: image or video file
-* `--quantize`: quantization parameter (FP32, FP16 or INT8), model of this type will 
-be used where applicable, default: FP16
-* `--precision`: optional, precision of mouse movement
-* `--speed`: optional, speed of mouse movement
+* `--type`: Input type 'image', 'video' or 'cam'
+* `--file`: Input image or video file
+* `--precision`: Model precision parameter (FP32, FP16 or INT8), each model in the pipeline 
+will be used with this precision if available, default: FP16
+* `--device`: Device to run inference on (CPU, GPU, VPU, FPGA), default: CPU
+* `--threshold`: Confidence threshold to use with Face Detection model, default: 0.5
+* `--log_level`: Logging level (ERROR, WARN, INFO, DEBUG). In debug, resulting gaze vector is logged. Default: INFO  
+* `--mouse_precision`: Mouse movement precision, optional
+* `--mouse_speed`: Mouse movement speed, optional
 
-Precision and speed parameters can be left empty to omit mouse movement.
+Parameters `model_precision` and `model_speed` can be left empty to omit mouse movement.
 The pyautogui library does not support mouse control in Virtual environments like VirtualBox, 
 so in order to check correctness, vector projections were drawn over the person's eyes.
 In non-virtualized environments, the code should work correctly, moving the mouse pointer
 in the direction of the person's gaze.
+
+A few examples of how to run the project given below.
 
 To run the demo on an image:
 
@@ -68,8 +100,9 @@ To run the demo on a cam video stream and move the mouse pointer:
 
     python main.py --type cam --precision high --speed fast
     
-Note: add `--quantize` parameter to use quantized model of the given type: FP32, FP16, INT8 
-(default: FP16) 
+Note: add `--precision` parameter to the above to use model precision, 
+`--device` to use on device other than CPU (e.g. GPU, FPGA or VPU), 
+`--threshold` to use different confidence threshold. 
    
 
 ## Benchmarks
@@ -122,10 +155,11 @@ As stated above, the rate achieved on the given hardware was ~16 FPS, which can 
 acceptable in many cases (human eye is ok when viewing video even with 10 FPS).
 
 ### Edge Cases
-To avoid person detect/un-detect issue and having to play around with probability threshold,
-the Face Detection model does not use threshold to select a face, it simply takes the
-face with highest probability. This makes model more stable when a single person 
-is in the view. 
+Probability threshold is used in Face Detection model.
+In case no face is detected in the frame a message is written to log stating frame number.
+In case there are several faces in view detected with enough confidence, 
+a face with highest probability is selected. 
 
-With multiple people in the view the side-effect is that it may switch from person to person. 
-To avoid this, some type of face tracking (e.g. centroid tracking) can be employed. 
+With multiple people in the view this has a side-effect of potentially switching 
+from person to person. To avoid this, some type of tracking 
+(e.g. centroid tracking) can be employed. 

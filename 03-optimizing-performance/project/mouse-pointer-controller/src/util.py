@@ -1,3 +1,5 @@
+import logging
+
 CPU_EXTENSION = '/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so'
 
 
@@ -16,6 +18,6 @@ def check_layers_supported(engine, network, device):
     for l in layers:
         if l not in layers_supported:
             all_supported = False
-            print(f'Warning: Layer {l} is not supported on {device}')
+            logging.warning(f'Layer {l} is not supported on {device}')
 
     return all_supported

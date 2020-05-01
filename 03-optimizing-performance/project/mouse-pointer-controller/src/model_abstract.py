@@ -3,6 +3,7 @@ Class containing common model methods, to be inherited by other model classes.
 """
 import time
 import numpy as np
+import logging
 from util import check_layers_supported
 from openvino.inference_engine import IENetwork, IECore
 
@@ -11,6 +12,7 @@ class ModelAbstract:
     """
     Init metrics
     """
+
     def __init__(self, name, model_name, device='CPU', threshold=0.5, extension=None):
         """
         Use this to set your instance variables.
@@ -37,11 +39,11 @@ class ModelAbstract:
 
     def load_model(self):
         if not self.check_model():
-            print(f'[{self.name}] Not all layers supported, adding extension...')
+            logging.warning(f'[{self.name}] Not all layers supported, adding extension...')
             self.core.add_extension(self.extension, self.device)
             self.check_model()
         else:
-            print(f'[{self.name}] All layers supported')
+            logging.info(f'[{self.name}] All layers supported')
 
         try:
             s = time.time()
@@ -51,7 +53,7 @@ class ModelAbstract:
                 num_requests=1)
             self.loading_time = time.time() - s
         except Exception as e:
-            print(f'[{self.name}] ERROR: Cannot load network: {e}')
+            logging.error(f'[{self.name}] Cannot load network: {e}')
             raise e
 
     def predict(self, image):
@@ -81,7 +83,6 @@ class ModelAbstract:
         avg_pt = np.average(np.array(self.processing_times, dtype=np.float))
         avg_it = np.average(np.array(self.inference_times, dtype=np.float))
         if header:
-            print()
-            print(f'| Name | Loading Time | Avg processing time | Avg inference time |')
-            print(f'|------|--------------|---------------------|--------------------|')
-        print(f'| {self.name} | {self.loading_time:.3} | {avg_pt:.3} | {avg_it:.3} |')
+            logging.info('| Name | Loading Time | Avg processing time | Avg inference time |')
+            logging.info('|------|--------------|---------------------|--------------------|')
+        logging.info(f'| {self.name} | {self.loading_time:.3} | {avg_pt:.3} | {avg_it:.3} |')
